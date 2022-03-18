@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using GradeBook.Enums;
@@ -15,7 +17,32 @@ namespace GradeBook.GradeBooks
 
         public override char GetLetterGrade(double averageGrade)
         {
-            return base.GetLetterGrade(averageGrade);
-        }
+            if (Students.Count < 5)
+                throw new InvalidOperationException();
+
+            var n = (int)Math.Ceiling(Students.Count * 0.2);
+            var grades = Students.OrderByDescending(e => e.AverageGrade).Select(e => e.AverageGrade).ToList();
+
+            if (averageGrade >= grades[n - 1])
+            {
+                return 'A';
+            }
+            if (averageGrade >= grades[(n * 2) - 1])
+            {
+                return 'B';
+            }
+            if (averageGrade >= grades[(n * 3) - 1])
+            {
+                return 'C';
+            }
+            if (averageGrade >= grades[(n * 4) - 1])
+            {
+                return 'D';
+            }
+            return 'F';
+            
+
+
+    }
     }
 }
